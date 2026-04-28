@@ -269,6 +269,184 @@ Globally ranked **1–50** (most exam‑common first). Format: short scenario �
 | 48 | Secure | HTTPS enforcement at the bucket edge | **Bucket policy** deny insecure transport (`aws:SecureTransport`) |
 | 49 | Cost‑optimized | Snapshots piling up across Regions | **AWS Backup** copy rules / lifecycle + delete unused AMIs/snapshots |
 | 50 | Performant | Repeated identical database queries from app tier | Cache layer (**ElastiCache**) or **DynamoDB DAX** for Dynamo |
+| Scenario | Solution |
+|---------|----------|
+| **Decouple variable workloads** (e.g., sudden spikes of 100,000 messages/sec). | Use **Amazon SQS** with an Auto Scaling group of EC2 workers. SQS buffers the traffic, preventing overload. |
+| **Ensure strict ordering of transactions** (e.g., ecommerce orders). | Use **Amazon SQS FIFO** queues to guarantee exactly-once processing and preserve order. |
+| **Highly available shared file storage** across multiple EC2 instances in different AZs. | Use **Amazon EFS** (Elastic File System). It scales automatically and supports concurrent access across AZs. |
+| **Recover database to a specific minute** (RPO of 15 minutes, RTO 1 hour). | Enable **Point-in-Time Recovery (PITR)** on **Amazon DynamoDB** or **Amazon RDS/Aurora** and restore to the desired time. |
+| **Migrate on-premises Windows shared file storage** (SMB) to AWS. | Use **Amazon FSx for Windows File Server** with a Multi-AZ deployment. |
+| **Process events from an S3 bucket redundantly** without dropping messages. | Configure S3 Event Notifications to send messages to an **Amazon SQS** queue, then process with Lambda. |
+| **Decouple pub/sub architecture** with multiple consumer applications. | Publish messages to an **Amazon SNS** topic with multiple **SQS** queues subscribed to it (Fan-out pattern). |
+| **Guarantee EC2 capacity** for an upcoming event in a specific AZ. | Create an **On-Demand Capacity Reservation** specifying the Region and AZ. |
+| **Migrate large data files offline** (e.g., 50 TB+) when internet bandwidth is limited. | Use **AWS Snowball Edge**. (Transfer takes days but requires 0 network bandwidth). |
+
+## Domain 2: Design High-Performing Architectures
+
+| Scenario | Solution |
+|---------|----------|
+| **Serve static and dynamic web content globally** with minimal latency. | Use **Amazon CloudFront** as a CDN with an S3 bucket origin (static) and an **Application Load Balancer (ALB)** origin (dynamic). |
+| **Analyze S3 log files directly** without loading them into a database. | Use **Amazon Athena** to run ad-hoc SQL queries directly against the JSON/CSV logs in S3. |
+| **Ingest and buffer high-velocity streaming data** (e.g., IoT alerts, clickstreams). | Use **Amazon Kinesis Data Firehose** to capture the stream and automatically deliver to S3. |
+| **Scale read-heavy database workloads** automatically. | Use **Amazon Aurora** (Multi-AZ) with **Aurora Auto Scaling** to add Aurora Read Replicas based on CPU/connection load. |
+| **Provide low-latency hybrid cloud file access** (cache frequently used files on-prem). | Use **Amazon S3 File Gateway** (Storage Gateway) to back up to S3 while keeping a local cache. |
+| **Accelerate global data uploads to a central S3 bucket.** | Enable **S3 Transfer Acceleration** on the destination bucket to use CloudFront Edge Locations for fast uploads. |
+
+No, that was only a small portion. The file you provided contains over 600 scenarios. To help you study effectively, I have extracted the next major set of scenarios and simplified them into the table format below.
+
+| Scenario | Solution |
+| :--- | :--- |
+| **Audit S3 for unauthorized configuration changes** with minimal effort. | Enable **AWS Config** with managed rules to monitor and record S3 bucket settings. |
+| **Share CloudWatch dashboards with external users** without AWS accounts. | Use the **Share Dashboard** feature in CloudWatch to provide a public or password-protected link. |
+| **SSO for multiple accounts** while managing users in on-premises Active Directory. | Use **AWS IAM Identity Center** (formerly AWS SSO) and create a forest trust with the on-premises AD. |
+| **Lowest-latency global routing for UDP traffic** with automated failover. | Use a **Network Load Balancer (NLB)** as an endpoint for **AWS Global Accelerator**. |
+| **Reduce costs for monthly 48-hour DB tests** that use high resources. | **Snapshot the DB**, terminate the instance after the test, and restore from the snapshot next month. |
+| **Ensure all EC2, RDS, and Redshift resources have tags** for cost tracking. | Use **AWS Config rules** to identify untagged resources and trigger automated remediation. |
+| **Host a static website cost-effectively** (HTML, CSS, JS). | Create an **Amazon S3 bucket** and enable static website hosting. |
+| **Real-time financial transaction sharing** with PII removal (masking). | Stream to **Kinesis Data Streams**, use **Lambda** for data masking, and store in **DynamoDB**. |
+| **Track resource configuration history and API activity** for compliance. | Use **AWS Config** for configuration history and **AWS CloudTrail** for API call logs. |
+| **Detect and protect against large-scale DDoS attacks** for a public web app. | Enable **AWS Shield Advanced** and associate it with your CloudFront or ALB resources. |
+| **Remote EC2 administration** without opening inbound ports or using SSH keys. | Use **AWS Systems Manager Session Manager** with an IAM role attached to the instance. |
+| **Decrease global latency for an S3 static website** cost-effectively. | Deploy an **Amazon CloudFront** distribution with the S3 bucket as the origin. |
+| **Fix RDS performance issues** where storage I/O is the bottleneck. | Change the RDS storage type to **Provisioned IOPS SSD (PIOPS)**. |
+| **Ingest and archive 1 TB of IoT data daily** (immediate access for 14 days). | **Kinesis Data Firehose** to **S3**, with a **Lifecycle policy** to transition to Glacier after 14 days. |
+| **Integrate SaaS sources with S3** for analysis with zero custom code. | Use **Amazon AppFlow** to automate data transfers between SaaS apps and S3. |
+| **Avoid Regional data transfer charges** for EC2-to-S3 traffic. | Create a **Gateway VPC Endpoint** for Amazon S3 in your VPC. |
+| **Protect critical S3 data from accidental deletion** or overwriting. | Enable **S3 Versioning** and configure **MFA Delete**. |
+| **Identify PHI/Sensitive data in uploaded PDFs** automatically. | Use **Amazon Macie** to scan the S3 bucket and trigger an SNS alert if sensitive data is found. |
+| **Guarantee EC2 capacity in a specific AZ** for a planned high-traffic event. | Create an **On-Demand Capacity Reservation** for the specific Region and AZ. |
+| **Durable image processing** that can handle spikes without losing data. | **S3 Event Notifications** send a message to **SQS**; a **Lambda** function polls the queue for processing. |
+
+It looks like you might be trying to say "memory" or perhaps asking for more scenarios from your file! 
+
+If you would like me to continue converting the data from your **AWS SAA-C03 Solution** file into the table format, here is the next batch of scenarios and solutions:
+
+| Scenario | Solution |
+| :--- | :--- |
+| **Audit S3 for unauthorized configuration changes** | Enable **AWS Config** with appropriate rules to monitor and record changes to bucket configurations. |
+| **Share CloudWatch dashboards with external users** without AWS accounts. | Use the **Share Dashboard** feature in CloudWatch to generate a public or password-protected link. |
+| **SSO for multiple accounts** while managing users in on-premises Active Directory. | Enable **AWS IAM Identity Center** and create a forest trust with the on-premises AD. |
+| **Lowest-latency global routing for UDP** with automated failover. | Deploy a **Network Load Balancer (NLB)** in each Region as an **AWS Global Accelerator** endpoint. |
+| **Reduce costs for monthly 48-hour resource-intensive DB tests.** | **Snapshot the DB**, terminate the instance after tests, and restore from the snapshot when needed next month. |
+| **Ensure all EC2, RDS, and Redshift resources have tags** with minimal effort. | Use **AWS Config rules** to define and detect resources that are missing required tags. |
+| **Host a static website cost-effectively** (HTML, CSS, JS, images). | Create an **Amazon S3 bucket** and configure it for static website hosting. |
+| **Scalable, near-real-time financial transaction sharing** with PII removal. | Stream to **Kinesis Data Streams**, use **Lambda** for PII redaction, and store in **DynamoDB**. |
+| **Track resource configuration changes and API history** for compliance. | Use **AWS Config** for configuration history and **AWS CloudTrail** for API call history. |
+| **Detect and protect against large-scale DDoS attacks** for a public web app. | Enable **AWS Shield Advanced** and associate it with the Application Load Balancer. |
+
+As your file contains over 680 scenarios, here is the next set of solutions organized into the table format to help with your SAA-C03 preparation.
+
+| Scenario | Solution |
+| :--- | :--- |
+| **Patch 1,000 EC2 instances** with third-party software updates quickly. | Use **AWS Systems Manager Run Command** to execute the patch script across all instances simultaneously. |
+| **Email daily HTML reports** of shipping statistics automatically. | **Amazon EventBridge** triggers a **Lambda** function to query the data; use **Amazon SES** to format and send the email. |
+| **Scalable storage for massive output files** (tens of GB to hundreds of TB). | Use **Amazon EFS** (Elastic File System) mounted on EC2 instances in a Multi-AZ Auto Scaling group. |
+| **Regulatory 10-year S3 record retention** with a strict "no-deletion" policy. | Move to **S3 Glacier Deep Archive** via Lifecycle rules and apply **S3 Object Lock** in **Compliance mode** for 10 years. |
+| **Migrate on-premises Windows shares** while preserving existing file permissions (NTFS). | Migrate data to **Amazon FSx for Windows File Server** in a Multi-AZ deployment. |
+| **Restrict RDS access** so only EC2 instances in specific private subnets can connect. | Configure the **RDS Security Group** to allow inbound traffic only from the **Security Group ID** of the web servers. |
+| **Custom domain and SSL certificate** for an API Gateway in a specific region. | Use **AWS Certificate Manager (ACM)** to request a certificate and associate it with a **Regional API Gateway endpoint**. |
+| **Identify inappropriate images** in social media uploads with minimal manual effort. | Use **Amazon Rekognition** for automated image moderation; use human review only for low-confidence results. |
+| **Run containerized applications** without managing the underlying EC2 servers. | Deploy the containers on **Amazon ECS** (Elastic Container Service) using the **AWS Fargate** launch type. |
+| **Analyze 30 TB of clickstream data daily** with high-speed ingestion and storage. | **Kinesis Data Streams** $\rightarrow$ **Kinesis Data Firehose** $\rightarrow$ **S3 Data Lake** $\rightarrow$ **Amazon Redshift** (via COPY command). |
+| **Force HTTPS for all web traffic** hitting an Application Load Balancer. | Configure an ALB **listener rule** to perform an **HTTP-to-HTTPS redirect** (301) on port 80. |
+| **Automate rotation of RDS credentials** without hardcoding them in application code. | Store credentials in **AWS Secrets Manager** and enable the built-in **automatic rotation** for RDS. |
+| **Annual rotation of a third-party SSL certificate** on an ALB. | Import the certificate into **ACM**; set up an **EventBridge** rule to trigger an SNS notification 30 days before expiry. |
+| **Rapidly scale PDF-to-JPG conversion** in a cost-effective, serverless way. | Configure an **S3 PUT event** to trigger a **Lambda** function that performs the conversion and saves the output. |
+| **Low-latency hybrid Windows storage** for active files while migrating to the cloud. | Use **Amazon FSx File Gateway** on-premises to provide local caching for **Amazon FSx for Windows File Server**. |
+| **Identify PHI (Protected Health Information)** in medical reports (PDF/JPEG). | Use **Amazon Textract** to extract text and **Amazon Comprehend Medical** to identify and categorize PHI entities. |
+| **Cost-effective storage for 4 years** (data must be IA after 30 days). | Use an **S3 Lifecycle policy** to move objects to **S3 Standard-IA** after 30 days, then delete after 1,460 days. |
+| **Prevent duplicate record creation** in RDS from SQS messages when processing takes time. | Increase the **SQS Visibility Timeout** to ensure the worker has enough time to finish before the message reappears. |
+| **Establish a high-bandwidth connection** with a cost-effective backup. | Use **AWS Direct Connect** as the primary line and an **AWS Site-to-Site VPN** as the failover connection. |
+| **Highest availability for Aurora PostgreSQL** with minimal application downtime. | Use **Aurora Multi-AZ** and connect via **Amazon RDS Proxy** to reduce failover times. |
+
+
+Continuing with more scenarios from your file to help you prepare:
+
+| Scenario | Solution |
+| :--- | :--- |
+| **Detect HTTP errors behind a Network Load Balancer (NLB)** without custom scripts. | Replace the NLB with an **Application Load Balancer (ALB)** and enable **HTTP health checks**. |
+| **Securely manage SSH access to private instances** via a bastion host. | Bastion SG: allow company IP; Private Instance SG: allow only the Bastion's private IP. |
+| **Securely separate Web and SQL tiers** using Security Groups. | Web tier: port 443 from 0.0.0.0/0; DB tier: port 1433 from the **Web security group ID**. |
+| **Modernize a multi-tier app to prevent dropped transactions** during spikes. | Use **API Gateway + Lambda** with **Amazon SQS** as a buffer between layers. |
+| **Securely transfer 10 TB of JSON data from a SAN to S3**. | Use **AWS DataSync** over an **AWS Direct Connect** connection. |
+| **Real-time API ingestion, transformation, and storage**. | **API Gateway** $\rightarrow$ **Kinesis Data Streams** $\rightarrow$ **Lambda** (transform) $\rightarrow$ **Firehose** $\rightarrow$ **S3**. |
+| **Retain DynamoDB transactions for 7 years** for compliance. | Use **AWS Backup** to manage scheduled backups and long-term retention policies. |
+| **Optimize DynamoDB for unpredictable traffic spikes**. | Switch the table to **DynamoDB on-demand capacity mode**. |
+| **Parallel processing based on queue depth**. | Use an **SQS queue** with an **EC2 Auto Scaling group** based on the `ApproximateNumberOfMessages` metric. |
+| **Alert 30 days before an ACM certificate expires**. | Use an **EventBridge rule** to trigger a **Lambda** function that sends an alert via **Amazon SNS**. |
+| **European loading optimization for a US-based backend**. | Use **Amazon CloudFront** with the on-premises US servers configured as a **custom origin**. |
+| **Cost-effective EC2 purchasing for 24/7 production vs. 8h dev/test**. | Use **Reserved Instances (or Savings Plans)** for production and **On-Demand** for dev/test. |
+| **WORM compliance for uploaded documents in S3**. | Enable **S3 Versioning** and **S3 Object Lock** on the bucket. |
+| **Connect web servers to RDS with frequent password rotation**. | Use **AWS Secrets Manager** and grant the web servers IAM permissions to retrieve the secret. |
+| **Store data during DB upgrades to avoid transaction loss**. | Buffer incoming data in an **Amazon SQS FIFO queue** and use **Lambda** to process once the DB is back. |
+| **Requirement for "Requester Pays" in S3** (e.g., European firm accessing US data). | Enable the **Requester Pays** feature on the S3 bucket configuration. |
+| **Improve performance of reporting scripts running against a production RDS**. | Create an **RDS Read Replica** specifically for the reporting scripts to offload the primary DB. |
+| **Internal-only EC2 access to S3 API** without using the public internet. | Configure an **S3 Gateway VPC Endpoint**. |
+| **Highest availability for Aurora with minimal effort**. | Deploy **Aurora Multi-AZ** and use **Amazon RDS Proxy** for faster failover handling. |
+| **Automate NFS-to-EFS migration** for a 200 GB dataset. | Deploy an **AWS DataSync** agent on-premises and sync directly to the EFS file system. |
+
+
+Continuing with more scenarios from your study guide:
+
+| Scenario | Solution |
+| :--- | :--- |
+| **Protect a serverless API (API Gateway/Lambda) from bots and SQL injection.** | Deploy **AWS WAF** with managed rules and associate it with the **API Gateway** stage. |
+| **Securely share S3 objects with private users** without making the bucket public. | Generate **CloudFront Signed URLs** or **S3 Presigned URLs** with an expiration time. |
+| **Identify and redact PII (Personally Identifiable Information)** from text files in S3. | Use **Amazon Comprehend** to detect PII and a **Lambda** function to mask or redact the sensitive data. |
+| **Centralized logging for multiple AWS accounts** in an organization. | Use **Amazon CloudWatch Logs** with cross-account subscriptions to send logs to a central **Kinesis Data Firehose** and then to S3. |
+| **Enforce service-level permissions across an entire AWS Organization.** | Use **Service Control Policies (SCPs)** in **AWS Organizations** to restrict what services members can use. |
+| **Automate the discovery and protection of sensitive data** across many S3 buckets. | Enable **Amazon Macie** to automatically scan, classify, and protect sensitive data at scale. |
+| **Highest security for KMS keys** (cannot leave the hardware). | Use **AWS CloudHSM** for dedicated hardware security module (HSM) clusters in the AWS Cloud. |
+| **Synchronize data between two different S3 buckets in different Regions.** | Enable **S3 Cross-Region Replication (CRR)** on the source bucket to automatically copy new objects. |
+| **Low-latency access to common files for on-premises users** while keeping a master copy in S3. | Deploy an **Amazon S3 File Gateway** locally to provide an NFS/SMB mount with a local cache. |
+| **Verify that all EBS volumes are encrypted** and automatically remediate if they are not. | Use **AWS Config** to detect non-compliant volumes and trigger an **AWS Systems Manager Automation** runbook. |
+| **Migrate a multi-tier app (MySQL + Web) with minimal changes** and improved resiliency. | Migrate the web tier to an **ALB with Auto Scaling** and the DB to **Amazon RDS Multi-AZ**. |
+| **Single-digit millisecond latency for applications** near a specific region due to regulations. | Deploy the application in **AWS Local Zones** to bring compute and storage closer to the users. |
+
+
+Continuing from your document, here are more scenarios focusing on advanced architecture, database management, and operational efficiency:
+
+| Scenario | Solution |
+| :--- | :--- |
+| **Separate read and write traffic for an RDS database** to improve performance. | Create one or more **RDS Read Replicas** and update the application to send read queries to the replica endpoint. |
+| **Highly available shared storage for SharePoint** or other Windows-based applications. | Use **Amazon FSx for Windows File Server** with a **Multi-AZ** deployment and Microsoft AD integration. |
+| **Troubleshoot duplicate emails being sent** by a Lambda function triggered by SQS. | Increase the **SQS Visibility Timeout** to ensure the function has enough time to process the message before it becomes visible again. |
+| **High-performance Lustre file system** linked to S3 for on-premises gaming or compute workloads. | Use **Amazon FSx for Lustre** and configure it to sync with an S3 bucket for long-term storage. |
+| **Securely store and encrypt sensitive container data** (e.g., certificates) in S3. | Use **AWS KMS** with a Customer Managed Key (CMK) to encrypt the data before uploading it to S3. |
+| **Provide internet access to instances in private subnets** across 3 Availability Zones. | Deploy **3 NAT Gateways** (one in a public subnet in each AZ) to ensure high availability and prevent cross-AZ data charges. |
+| **Automate the migration of 200 GB of data** from an on-premises NFS share to EFS. | Install the **AWS DataSync** agent on-premises and create a task to sync directly to the **Amazon EFS** file system. |
+| **Prevent an AWS Glue job from reprocessing old data** during incremental runs. | Enable **Job Bookmarks** in the AWS Glue job configuration to track the last processed state. |
+| **Protect a serverless API from SQL injection and bots** while limiting user access. | Associate **AWS WAF** with the API Gateway and use **API Keys** with a **Usage Plan** for rate limiting. |
+| **Cost-effective 30-day disaster recovery** for JSON data with millisecond access. | Store the data in **Amazon S3 Standard**; it provides high durability and the required immediate access at a low cost. |
+| **Reduce cross-Region data transfer costs** for a global application. | Use **Amazon CloudFront** to cache content closer to users or deploy **VPC Peering** within the same Region where possible. |
+| **Migrate a legacy app with a single-node MySQL DB** to a more resilient architecture. | Move the web tier to an **ALB with Auto Scaling** and the database to **Amazon RDS Multi-AZ**. |
+
+
+Continuing with more scenarios from your file, here are the next sets focusing on cloud governance, monitoring, and security optimization:
+
+| Scenario | Solution |
+| :--- | :--- |
+| **Apply different security policies to different departments** within a company. | Use **AWS Organizations** to group accounts into **Organizational Units (OUs)** and apply unique **Service Control Policies (SCPs)** to each. |
+| **Consolidate billing for multiple AWS accounts** and take advantage of volume discounts. | Set up **Consolidated Billing** in **AWS Organizations** to combine usage across all accounts for a single payment. |
+| **Automatically notify an administrator** if a specific API call (like `StopInstances`) is made. | Create an **Amazon EventBridge** rule that matches the API pattern in **CloudTrail** and triggers an **SNS** notification. |
+| **Filter and search through application logs** for specific error codes or patterns. | Send logs to **Amazon CloudWatch Logs** and use **CloudWatch Logs Insights** to run ad-hoc queries. |
+| **Enforce encryption for all new S3 buckets** created in an organization. | Use a **Service Control Policy (SCP)** that denies the `s3:CreateBucket` action if the encryption property is not set. |
+| **Check for security vulnerabilities in EC2 instances** and ECR images automatically. | Use **Amazon Inspector** to perform automated security assessments and provide a list of findings. |
+| **Track who changed a Security Group rule** and when the change occurred. | Search the **AWS CloudTrail** event history for the `AuthorizeSecurityGroupIngress` or `RevokeSecurityGroupIngress` events. |
+| **Highly available, low-latency connection to AWS** from an on-premises data center. | Set up **AWS Direct Connect** with a secondary **Direct Connect** link or a **Site-to-Site VPN** for redundancy. |
+| **Grant a third-party auditor temporary access** to your AWS resources. | Create an **IAM Role** with a **Cross-Account Trust Policy** and an **External ID** for the auditor to assume. |
+| **Scale a fleet of EC2 instances based on the number of active users.** | Use **Application Load Balancer** request counts per target as the metric for **Auto Scaling**. |
+
+
+
+| Scenario | Solution |
+| :--- | :--- |
+| **Ensure a database is compliant** with specific encryption standards. | Use **AWS Config** with the `rds-storage-encrypted` managed rule to monitor and report on RDS encryption status. |
+| **Connect multiple VPCs and on-premises networks** in a hub-and-spoke model. | Deploy an **AWS Transit Gateway** to act as a central router for all network traffic. |
+| **Perform deep packet inspection (DPI)** on all traffic entering a VPC. | Route traffic through a **Gateway Load Balancer (GWLB)** that distributes the load to a fleet of virtual security appliances. |
+| **Store large amounts of data that is rarely accessed** but must be retrievable within minutes. | Use **S3 Glacier Flexible Retrieval** (formerly Glacier) with the **Expedited** retrieval option. |
+
+
 
 ---
 **Exam Tip:** Always look for keywords like "most cost-effective" (Spot, S3 Standard-IA, Serverless), "least operational overhead" (Managed services like Fargate, Aurora, AppFlow), and "decouple" (SQS, SNS, EventBridge).
