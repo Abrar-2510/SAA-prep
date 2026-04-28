@@ -201,18 +201,22 @@ Got it 👍 — continuing in **English only** and keeping the same clean table 
 
 ---
 
-## 🔥 Final High-Frequency Patterns
+Here is the corrected Markdown code for the **Final High-Frequency Patterns** table and list. I have fixed the formatting of the table headers and rows so they render correctly.
 
-* **Decoupling → SQS**
-* **Fan-out → SNS + SQS**
-* **Event processing → S3 + Lambda**
-* **Streaming → Kinesis**
-* **Shared storage → EFS / FSx**
-* **Credentials → Secrets Manager**
-* **Global performance → CloudFront**
-* **Private access → VPC Endpoint**
-* **Cost optimization → Lifecycle policies**
+### 🔥 Final High-Frequency Patterns
 
+* **Decoupling** → SQS
+* **Fan-out** → SNS + SQS
+* **Event processing** → S3 + Lambda
+* **Streaming** → Kinesis
+* **Shared storage** → EFS / FSx
+* **Credentials** → Secrets Manager
+* **Global performance** → CloudFront
+* **Private access** → VPC Endpoint
+* **Cost optimization** → Lifecycle policies
+
+| Scenario | Solution |
+| :--- | :--- |
 | **Decouple variable workloads** (e.g., sudden spikes of 100,000 messages/sec). | Use **Amazon SQS** with an Auto Scaling group of EC2 workers. SQS buffers the traffic, preventing overload. |
 | **Ensure strict ordering of transactions** (e.g., ecommerce orders). | Use **Amazon SQS FIFO** queues to guarantee exactly-once processing and preserve order. |
 | **Highly available shared file storage** across multiple EC2 instances in different AZs. | Use **Amazon EFS** (Elastic File System). It scales automatically and supports concurrent access across AZs. |
@@ -222,6 +226,7 @@ Got it 👍 — continuing in **English only** and keeping the same clean table 
 | **Decouple pub/sub architecture** with multiple consumer applications. | Publish messages to an **Amazon SNS** topic with multiple **SQS** queues subscribed to it (Fan-out pattern). |
 | **Guarantee EC2 capacity** for an upcoming event in a specific AZ. | Create an **On-Demand Capacity Reservation** specifying the Region and AZ. |
 | **Migrate large data files offline** (e.g., 50 TB+) when internet bandwidth is limited. | Use **AWS Snowball Edge**. (Transfer takes days but requires 0 network bandwidth). |
+
 
 ## Domain 2: Design High-Performing Architectures
 
